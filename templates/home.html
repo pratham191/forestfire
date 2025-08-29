@@ -1,0 +1,155 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Fire Prediction</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: url('/static/forest.jpg');
+            background-size: cover;
+        }
+        .container {
+            background: #131212;
+            padding: 30px;
+            border-radius: 15px;
+            width: 420px;
+            box-shadow: 0 8px 20px rgba(247, 245, 245, 0.2);
+            transition: transform 0.3s ease;
+        }
+        .container {
+            transform: scale(1.02);
+            color: whitesmoke;
+        }
+        h2 {
+            text-align: center;
+            color: white#f7f2f2;
+            margin-bottom: 20px;
+        }
+        label {
+            font-weight: 600;
+            display: block;
+            margin-top: 12px;
+            color: white;
+        }
+        input, select {
+            width: 100%;
+            padding: 10px;
+            margin-top: 6px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            font-size: 14px;
+            transition: border 0.2s ease;
+        }
+        input:focus, select:focus {
+            outline: none;
+            border: 1px solid #007BFF;
+            box-shadow: 0 0 5px rgba(0,123,255,0.3);
+        }
+        button {
+            width: 100%;
+            padding: 12px;
+            margin-top: 20px;
+            border-radius: 8px;
+            background: #007BFF;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            border: none;
+            transition: background 0.3s ease;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        .result-box {
+            margin-top: 25px;
+            padding: 15px;
+            border-radius: 12px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 18px;
+        }
+        .safe {
+            background: #e6ffed;
+            color: #2d8a34;
+            border-left: 6px solid #2d8a34;
+        }
+        .danger {
+            background: #ffe6e6;
+            color: #c82333;
+            border-left: 6px solid #c82333;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <br>
+        <br>
+        <br>
+        <br>
+        <h2>🔥 Forest Fire Prediction</h2>
+        <form action="/predictdata" method="post">
+            <label for="temperature">Temperature:</label>
+            <input type="number" step="any" id="temperature" name="Temperature"
+                   value="{{ form_data.Temperature if form_data else '' }}" required>
+
+            <label for="rh">Relative Humidity (RH):</label>
+            <input type="number" step="any" id="rh" name="RH"
+                   value="{{ form_data.RH if form_data else '' }}" required>
+
+            <label for="ws">Wind Speed (WS):</label>
+            <input type="number" step="any" id="ws" name="WS"
+                   value="{{ form_data.WS if form_data else '' }}" required>
+
+            <label for="rain">Rain:</label>
+            <input type="number" step="any" id="rain" name="Rain"
+                   value="{{ form_data.Rain if form_data else '' }}" required>
+
+            <label for="ffmc">FFMC:</label>
+            <input type="number" step="any" id="ffmc" name="FFMC"
+                   value="{{ form_data.FFMC if form_data else '' }}" required>
+
+            <label for="dmc">DMC:</label>
+            <input type="number" step="any" id="dmc" name="DMC"
+                   value="{{ form_data.DMC if form_data else '' }}" required>
+
+            <label for="isi">ISI:</label>
+            <input type="number" step="any" id="isi" name="ISI"
+                   value="{{ form_data.ISI if form_data else '' }}" required>
+
+            <label for="classes">Classes:</label>
+            <select id="classes" name="Classes" required>
+                <option value="1" {% if form_data and form_data.Classes == 1 %}selected{% endif %}>Fire</option>
+                <option value="0" {% if form_data and form_data.Classes == 0 %}selected{% endif %}>Not Fire</option>
+            </select>
+
+            <label for="region">Region:</label>
+            <select id="region" name="Region" required>
+                <option value="1" {% if form_data and form_data.Region == 1 %}selected{% endif %}>North</option>
+                <option value="0" {% if form_data and form_data.Region == 0 %}selected{% endif %}>South</option>
+            </select>
+
+            <button type="submit">Predict</button>
+        </form>
+
+        
+       {% if results is not none %}
+        <div class="result-box {% if results > 50 %}danger{% else %}safe{% endif %}">
+            {% if results > 50 %}
+                🔥 High Fire Risk! Prediction Value: {{ results }}
+            {% else %}
+                ✅ Safe Zone. Prediction Value: {{ results }}
+            {% endif %}
+        </div>
+        {% endif %}
+
+    </div>
+</body>
+</html>
